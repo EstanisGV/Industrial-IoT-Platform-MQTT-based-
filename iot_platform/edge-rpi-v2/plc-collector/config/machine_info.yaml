@@ -1,0 +1,11 @@
+machine:
+  machine_id: "index_ms40_01"
+  plant: "avinent"
+  area: "cnc"
+  line: "line_01"
+  controller: "sinumerik_840d"
+  config_version: "1.0.0"
+  topics:
+    telemetry: "factory/avinent/index_ms40_01/telemetry"
+    heartbeat: "factory/avinent/index_ms40_01/heartbeat"
+    status: "factory/avinent/index_ms40_01/status"

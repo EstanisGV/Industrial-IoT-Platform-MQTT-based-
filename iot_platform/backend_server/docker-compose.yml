@@ -1,0 +1,18 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+  mqtt-debug:
+    image: eclipse-mosquitto:2
+    container_name: mqtt-debug
+    depends_on:
+      - mosquitto
+    command: >
+      sh -c "sleep 3 &&
+             mosquitto_sub -h mosquitto -p 1883 -t 'factory/#' -v"
