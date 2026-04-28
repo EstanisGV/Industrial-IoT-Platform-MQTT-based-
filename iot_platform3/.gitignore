@@ -1,0 +1,26 @@
+# Secrets
+backend_server/secrets/
+edge-rpi-v2/secrets/
+generated/
+*.env
+
+# Mosquitto runtime
+backend_server/mosquitto/data/
+backend_server/mosquitto/log/
+backend_server/mosquitto/config/passwords
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Local bundles
+dist/

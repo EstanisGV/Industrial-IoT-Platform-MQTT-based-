@@ -1,7 +1,10 @@
+version: '3.8'
+
 services:
   plc-collector:
     build:
       context: ./plc-collector
+    image: industrial-iot/plc-collector:local
     container_name: plc-collector
     restart: unless-stopped
     env_file:

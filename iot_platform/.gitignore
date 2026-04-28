@@ -1,0 +1,37 @@
+# Secrets and env
+.env
+*.env
+secrets/dev/
+secrets/prod/
+backend_server/secrets/
+edge-rpi-v2/secrets/
+
+# Generated artifacts
+generated/
+dist/
+
+# Mosquitto runtime and generated password file
+backend_server/mosquitto/data/
+backend_server/mosquitto/log/
+backend_server/mosquitto/config/passwords
+
+# TLS private keys
+*.key
+*.pem
+
+# Edge runtime
+edge-rpi-v2/plc-collector/logs/
+edge-rpi-v2/plc-collector/certs/*
+!**/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# IDE
+.vs/
+.vscode/
+.idea/

@@ -1,0 +1,16 @@
+# Machine users
+# machine_id == MQTT username
+# topic = factory/<plant>/<machine_id>/<message_type>
+
+pattern write factory/+/%u/telemetry
+pattern write factory/+/%u/heartbeat
+pattern write factory/+/%u/status
+
+pattern read factory/+/%u/cmd/#
+pattern read factory/+/%u/config/#
+
+user mqtt-debug
+topic read factory/#
+
+user mqtt-ingestor
+topic read factory/#

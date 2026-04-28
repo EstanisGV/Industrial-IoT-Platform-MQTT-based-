@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+
 import yaml
 from dotenv import load_dotenv
 
@@ -14,11 +16,20 @@ def _to_bool(value: str, default: bool = False) -> bool:
     return value.strip().lower() in ("1", "true", "yes", "on")
 
 
+def _config_path(filename: str) -> str:
+    docker_path = Path("/app/config") / filename
+    if docker_path.exists():
+        return str(docker_path)
+
+    local_path = Path(__file__).resolve().parents[1] / "config" / filename
+    return str(local_path)
+
+
 def load_settings() -> dict:
     load_dotenv()
 
-    machine_info = _load_yaml("/app/config/machine_info.yaml")
-    machine_tags = _load_yaml("/app/config/machine_tags.yaml")
+    machine_info = _load_yaml(_config_path("machine_info.yaml"))
+    machine_tags = _load_yaml(_config_path("machine_tags.yaml"))
 
     return {
         "env": {
@@ -31,7 +42,7 @@ def load_settings() -> dict:
             "OPCUA_URL": os.getenv("OPCUA_URL", ""),
             "OPCUA_USERNAME": os.getenv("OPCUA_USERNAME", ""),
             "OPCUA_PASSWORD": os.getenv("OPCUA_PASSWORD", ""),
-            "MQTT_HOST": os.getenv("MQTT_HOST", ""),
+            "MQTT_HOST": os.getenv("MQTT_HOST", "localhost"),
             "MQTT_PORT": int(os.getenv("MQTT_PORT", "1883")),
             "MQTT_USERNAME": os.getenv("MQTT_USERNAME", ""),
             "MQTT_PASSWORD": os.getenv("MQTT_PASSWORD", ""),

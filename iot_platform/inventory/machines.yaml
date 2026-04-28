@@ -1,0 +1,20 @@
+machines:
+  - machine_id: index_ms40_01
+    plant: avinent
+    area: cnc
+    line: line_01
+    controller: sinumerik_840d
+    protocol: mock
+    tag_profile: cnc_ms40
+    edge_host: rpi-index-ms40-01
+    enabled: true
+
+  - machine_id: index_ms22_01
+    plant: avinent
+    area: cnc
+    line: line_02
+    controller: sinumerik_840d
+    protocol: mock
+    tag_profile: cnc_ms22
+    edge_host: rpi-index-ms22-01
+    enabled: true

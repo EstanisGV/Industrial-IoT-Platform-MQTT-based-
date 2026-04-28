@@ -1,0 +1,20 @@
+tags:
+  - name: machine_running
+    type: bool
+    source: db100.dbx0.0
+    enabled: true
+
+  - name: part_count
+    type: int
+    source: db100.dbw2
+    enabled: true
+
+  - name: spindle_load_pct
+    type: float
+    source: db100.dbd4
+    enabled: true
+
+  - name: alarm_code
+    type: int
+    source: db100.dbw12
+    enabled: true

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  plc-collector:
+    image: industrial-iot/plc-collector:${SERVICE_VERSION:-local}
+    container_name: plc-collector
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    volumes:
+      - ./plc-collector/config:/app/config:ro
+      - ./plc-collector/certs:/app/certs:ro
+      - ./plc-collector/logs:/app/logs
+    network_mode: bridge
