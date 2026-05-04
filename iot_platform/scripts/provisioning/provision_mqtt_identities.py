@@ -14,18 +14,33 @@ PASSWORD_FILE = BASE_PATH / "backend_server" / "mosquitto" / "config" / "passwor
 
 
 def upsert_password_file(username: str, password: str):
-    """
-    Uses mosquitto_passwd to store a hash in Mosquitto password_file.
-    Requires mosquitto_passwd installed on the host running this script.
-    """
     PASSWORD_FILE.parent.mkdir(parents=True, exist_ok=True)
-    if not PASSWORD_FILE.exists():
-        PASSWORD_FILE.write_text("", encoding="utf-8")
 
-    subprocess.run(
-        ["mosquitto_passwd", "-b", str(PASSWORD_FILE), username, password],
-        check=True,
-    )
+    create_file = not PASSWORD_FILE.exists()
+
+    config_dir = PASSWORD_FILE.parent.resolve()
+
+    command = [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        f"{config_dir}:/mosquitto/config",
+        "eclipse-mosquitto:2",
+        "mosquitto_passwd",
+    ]
+
+    if create_file:
+        command.append("-c")
+
+    command.extend([
+        "-b",
+        "/mosquitto/config/passwords",
+        username,
+        password,
+    ])
+
+    subprocess.run(command, check=True)
 
 
 def provision(environment: str, rotate: str | None):
