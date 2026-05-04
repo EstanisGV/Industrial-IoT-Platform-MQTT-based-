@@ -7,6 +7,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from utils.inventory_loader import get_enabled_machines
 from utils.secret_store import FileSecretStore
+from validation.validate_inventory import validate_inventory
 
 BASE_PATH = Path(__file__).resolve().parents[2]
 PASSWORD_FILE = BASE_PATH / "backend_server" / "mosquitto" / "config" / "passwords"
@@ -28,6 +29,7 @@ def upsert_password_file(username: str, password: str):
 
 
 def provision(environment: str, rotate: str | None):
+    validate_inventory()
     store = FileSecretStore(environment)
     machines = get_enabled_machines()
 

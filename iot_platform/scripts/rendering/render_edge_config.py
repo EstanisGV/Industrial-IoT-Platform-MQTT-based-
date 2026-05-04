@@ -10,6 +10,8 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from utils.inventory_loader import get_machine, load_environment, load_tag_profile
 from utils.secret_store import FileSecretStore
 from utils.topic_builder import build_topics
+from validation.validate_inventory import validate_inventory
+
 
 BASE_PATH = Path(__file__).resolve().parents[2]
 GENERATED_EDGES_DIR = BASE_PATH / "generated" / "edges"
@@ -68,6 +70,7 @@ def render_machine_info(machine: dict) -> dict:
 
 
 def render(machine_id: str, environment: str):
+    validate_inventory()
     machine = get_machine(machine_id)
     env_cfg = load_environment(environment)
     tag_profile = load_tag_profile(machine["tag_profile"])
