@@ -2,7 +2,6 @@ import argparse
 import shutil
 from pathlib import Path
 import sys
-
 import yaml
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -43,8 +42,8 @@ def render_env(machine: dict, env_cfg: dict, secret: dict) -> str:
             "MQTT_RECONNECT_MAX_DELAY=60",
             f"MQTT_TLS_ENABLED={str(mqtt_cfg.get('tls_enabled', False)).lower()}",
             f"MQTT_TLS_CA_CERT={mqtt_cfg.get('ca_cert_path', '/app/certs/ca.crt')}",
-            "MQTT_TLS_CLIENT_CERT=/app/certs/client.crt",
-            "MQTT_TLS_CLIENT_KEY=/app/certs/client.key",
+            "MQTT_TLS_CLIENT_CERT=",
+            "MQTT_TLS_CLIENT_KEY=",
             "MQTT_TLS_INSECURE=false",
             f"POLL_INTERVAL_SECONDS={env_cfg['polling']['interval_seconds']}",
             f"HEARTBEAT_INTERVAL_SECONDS={env_cfg['heartbeat']['interval_seconds']}",
@@ -106,6 +105,22 @@ def render(machine_id: str, environment: str):
 
     (certs_dir / ".gitkeep").write_text("", encoding="utf-8")
     (logs_dir / ".gitkeep").write_text("", encoding="utf-8")
+
+    certs_dir.mkdir(parents=True, exist_ok=True)
+    logs_dir.mkdir(parents=True, exist_ok=True)
+
+    backend_ca_cert = BASE_PATH / "backend_server" / "mosquitto" / "config" / "certs" / "ca.crt"
+
+    if env_cfg["mqtt"].get("tls_enabled", False):
+        if not backend_ca_cert.exists():
+            raise SystemExit(
+                f"Missing CA certificate: {backend_ca_cert}\n"
+                "Generate TLS certificates before rendering edge config."
+            )
+
+        shutil.copyfile(backend_ca_cert, certs_dir / "ca.crt")
+    else:
+        (certs_dir / ".gitkeep").write_text("", encoding="utf-8")
 
     print(f"[OK] Edge config rendered: {out_dir}")
 

@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     ports:
       - "1883:1883"
-      # - "8883:8883"
+      - "8883:8883"
     volumes:
       - ./mosquitto/config:/mosquitto/config:ro
       - ./mosquitto/data:/mosquitto/data
@@ -24,7 +24,7 @@ services:
       sh -c "sleep 3 &&
       mosquitto_sub
       -h mosquitto
-      -p 1883
+      -p 8883
       -u $$MQTT_USERNAME
       -P $$MQTT_PASSWORD
       -t 'factory/#'
