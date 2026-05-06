@@ -19,7 +19,7 @@ services:
     depends_on:
       - mosquitto
     env_file:
-      - ./secrets/mqtt-debug.env
+      - ../secrets/dev/mqtt/mqtt-debug.env
     command: >
       sh -c "sleep 3 &&
       mosquitto_sub
