@@ -30,3 +30,5 @@ services:
       -P $$MQTT_PASSWORD
       -t 'factory/#'
       -v"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config:ro
