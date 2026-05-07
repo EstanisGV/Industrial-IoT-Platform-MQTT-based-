@@ -59,12 +59,18 @@ class MqttPublisher:
                 time.sleep(delay + random.uniform(0, 1))
                 delay = min(delay * 2, max_delay)
 
-    def publish(self, topic: str, payload: dict):
-        result = self.client.publish(
-            topic,
-            json.dumps(payload),
-            qos=self.settings["env"]["MQTT_QOS"],
-            retain=self.settings["env"]["MQTT_RETAIN"],
-        )
-        if result.rc != mqtt.MQTT_ERR_SUCCESS:
-            raise RuntimeError(f"MQTT publish failed with code {result.rc}")
+    def publish(self, topic: str, payload: dict, wait: bool = True, timeout: float = 5.0):
+    result = self.client.publish(
+        topic,
+        json.dumps(payload),
+        qos=self.settings["env"]["MQTT_QOS"],
+        retain=self.settings["env"]["MQTT_RETAIN"],
+    )
+
+    if result.rc != mqtt.MQTT_ERR_SUCCESS:
+        raise RuntimeError(f"MQTT publish failed with code {result.rc}")
+
+    if wait and self.settings["env"]["MQTT_QOS"] > 0:
+        published = result.wait_for_publish(timeout=timeout)
+        if not published:
+            raise TimeoutError(f"MQTT publish timeout for topic {topic}")

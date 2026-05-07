@@ -1,5 +1,6 @@
 import threading
 import time
+import uuid
 from datetime import datetime, timezone
 
 
@@ -16,15 +17,26 @@ class HeartbeatService:
         heartbeat_topic = machine["topics"]["heartbeat"]
 
         while self._running:
-            payload = {
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "machine_id": machine["machine_id"],
-                "plant": machine["plant"],
-                "status": "alive",
-                "service_version": self.settings["env"]["SERVICE_VERSION"],
-            }
-            self.publisher.publish(heartbeat_topic, payload)
-            self.logger.info("Heartbeat published", extra={"event": "heartbeat_publish"})
+            try:
+                payload = {
+                    "schema_version": "1.0",
+                    "message_id": str(uuid.uuid4()),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "machine_id": machine["machine_id"],
+                    "plant": machine["plant"],
+                    "status": "alive",
+                    "service_version": self.settings["env"]["SERVICE_VERSION"],
+                }
+
+                self.publisher.publish(heartbeat_topic, payload, wait=False)
+                self.logger.info("Heartbeat published", extra={"event": "heartbeat_publish"})
+
+            except Exception as exc:
+                self.logger.exception(
+                    f"Heartbeat publish failed: {exc}",
+                    extra={"event": "heartbeat_publish_error"},
+                )
+
             time.sleep(self.settings["env"]["HEARTBEAT_INTERVAL_SECONDS"])
 
     def start(self):
