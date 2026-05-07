@@ -6,7 +6,7 @@ import yaml
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from utils.inventory_loader import get_machine, load_environment, load_tag_profile
+from utils.inventory_loader import get_machine, get_enabled_machines, load_environment, load_tag_profile
 from utils.secret_store import FileSecretStore
 from utils.topic_builder import build_topics
 from validation.validate_inventory import validate_inventory
@@ -124,10 +124,20 @@ def render(machine_id: str, environment: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Render per-machine edge config.")
-    parser.add_argument("--machine", required=True)
     parser.add_argument("--env", default="dev", choices=["dev", "prod"])
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--machine")
+    group.add_argument("--all", action="store_true")
+
     args = parser.parse_args()
-    render(args.machine, args.env)
+
+    if args.all:
+        validate_inventory()
+        for machine in get_enabled_machines():
+            render(machine["machine_id"], args.env)
+    else:
+        render(args.machine, args.env)
 
 
 if __name__ == "__main__":

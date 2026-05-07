@@ -13,29 +13,34 @@ from utils.inventory_loader import get_machine
 GENERATED_EDGES_DIR = BASE_PATH / "generated" / "edges"
 DIST_DIR = BASE_PATH / "dist" / "edge_bundles"
 
-
-def main():
-    parser = argparse.ArgumentParser(description="Package generated edge bundle.")
-    parser.add_argument("--machine", required=True)
-    args = parser.parse_args()
-
-    validate_inventory()
-    get_machine(args.machine)
-
-    src = GENERATED_EDGES_DIR / args.machine
+def package_machine(machine_id: str):
+    src = GENERATED_EDGES_DIR / machine_id
 
     if not src.exists():
-        raise SystemExit(
-            f"Generated edge config not found: {src}\n"
-            f"Run first: python scripts/rendering/render_edge_config.py --env dev --machine {args.machine}"
-        )
+        raise SystemExit(f"Generated edge config not found: {src}")
 
     DIST_DIR.mkdir(parents=True, exist_ok=True)
 
-    archive_base = DIST_DIR / f"edge_bundle_{args.machine}"
+    archive_base = DIST_DIR / f"edge_bundle_{machine_id}"
     archive = shutil.make_archive(str(archive_base), "zip", root_dir=str(src))
 
     print(f"[OK] Bundle created: {archive}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Package generated edge bundle.")
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--machine")
+    group.add_argument("--all", action="store_true")
+
+    args = parser.parse_args()
+
+    if args.all:
+        for machine in get_enabled_machines():
+            package_machine(machine["machine_id"])
+    else:
+        package_machine(args.machine)
 
 
 if __name__ == "__main__":
