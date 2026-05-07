@@ -106,9 +106,6 @@ def render(machine_id: str, environment: str):
     (certs_dir / ".gitkeep").write_text("", encoding="utf-8")
     (logs_dir / ".gitkeep").write_text("", encoding="utf-8")
 
-    certs_dir.mkdir(parents=True, exist_ok=True)
-    logs_dir.mkdir(parents=True, exist_ok=True)
-
     backend_ca_cert = BASE_PATH / "backend_server" / "mosquitto" / "config" / "certs" / "ca.crt"
 
     if env_cfg["mqtt"].get("tls_enabled", False):

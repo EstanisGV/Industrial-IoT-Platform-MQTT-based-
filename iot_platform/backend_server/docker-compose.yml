@@ -25,6 +25,7 @@ services:
       mosquitto_sub
       -h mosquitto
       -p 8883
+      --cafile /mosquitto/config/certs/ca.crt
       -u $$MQTT_USERNAME
       -P $$MQTT_PASSWORD
       -t 'factory/#'

@@ -19,6 +19,10 @@ backend_server/mosquitto/config/passwords
 *.key
 *.pem
 
+# TLS generated certificates
+backend_server/mosquitto/config/certs/*
+!backend_server/mosquitto/config/certs/.gitkeep
+
 # Edge runtime
 edge-rpi-v2/plc-collector/logs/
 edge-rpi-v2/plc-collector/certs/*
