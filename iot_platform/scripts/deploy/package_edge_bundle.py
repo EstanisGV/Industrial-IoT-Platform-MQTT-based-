@@ -8,7 +8,7 @@ BASE_PATH = Path(__file__).resolve().parents[2]
 sys.path.append(str(BASE_PATH / "scripts"))
 
 from validation.validate_inventory import validate_inventory
-from utils.inventory_loader import get_machine
+from utils.inventory_loader import get_enabled_machines
 
 GENERATED_EDGES_DIR = BASE_PATH / "generated" / "edges"
 DIST_DIR = BASE_PATH / "dist" / "edge_bundles"
