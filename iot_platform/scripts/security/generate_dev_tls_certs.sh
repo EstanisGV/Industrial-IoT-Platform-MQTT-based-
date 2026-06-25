@@ -50,8 +50,8 @@ openssl x509 -req \
 
 rm -f "$SERVER_CSR" "$EXT_FILE"
 
-chmod 0644 "$CA_CRT" "$SERVER_CRT" "$SERVER_KEY"
-chmod 0600 "$CA_KEY"
+chmod 0644 "$CA_CRT" "$SERVER_CRT"
+chmod 0600 "$SERVER_KEY" "$CA_KEY"
 
 echo "[OK] TLS certificates generated in $CERT_DIR"
 echo "[OK] Mosquitto files:"
