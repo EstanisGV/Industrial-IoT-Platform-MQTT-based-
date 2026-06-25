@@ -29,12 +29,13 @@ def package_machine(machine_id: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Package generated edge bundle.")
-
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--machine")
     group.add_argument("--all", action="store_true")
 
     args = parser.parse_args()
+
+    validate_inventory()
 
     if args.all:
         for machine in get_enabled_machines():
