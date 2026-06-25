@@ -13,7 +13,7 @@ class PollingService:
         machine = self.settings["machine"]
         telemetry_topic = machine["topics"]["telemetry"]
         status_topic = machine["topics"]["status"]
-
+        consecutive_errors = 0
         while True:
             try:
                 values = self.collector.read()
@@ -47,8 +47,10 @@ class PollingService:
                     "Telemetry published",
                     extra={"event": "telemetry_publish"},
                 )
+                consecutive_errors = 0
 
             except Exception as exc:
+                consecutive_errors += 1
                 self.logger.exception(
                     f"Polling loop error: {exc}",
                     extra={"event": "polling_error"},
@@ -64,11 +66,14 @@ class PollingService:
                         "status": "error",
                         "error_type": type(exc).__name__,
                         "error_message": str(exc),
+                        "consecutive_errors": consecutive_errors,
                     }
 
                     self.publisher.publish(status_topic, error_payload, wait=False)
+                    consecutive_errors = 0
 
                 except Exception as publish_exc:
+                    consecutive_errors += 1
                     self.logger.exception(
                         f"Failed to publish error status: {publish_exc}",
                         extra={"event": "status_publish_error"},
