@@ -1,0 +1,57 @@
+name: opcua-direct
+services:
+  database:
+    image: timescale/timescaledb:2.31.0-pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: iot
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+      POSTGRES_DB: industrial_iot
+      TIMESCALEDB_TELEMETRY: "off"
+    volumes:
+      - type: bind
+        source: /srv/iot-data/timescaledb
+        target: /var/lib/postgresql/data
+        bind:
+          create_host_path: false
+      - ./db/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iot -d industrial_iot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+    # Intentionally NO published database port.
+
+  collector:
+    build: .
+    restart: unless-stopped
+    init: true
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      DB_HOST: database
+      DB_PORT: "5432"
+      DB_NAME: industrial_iot
+      DB_USER: iot
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+      INVENTORY_FILE: /app/config/machines.yaml
+      SPOOL_DIR: /spool
+      LOG_LEVEL: INFO
+    volumes:
+      - ./config:/app/config:ro
+      - ./secrets:/app/secrets:ro
+      - type: bind
+        source: /srv/iot-data/spool
+        target: /spool
+        bind:
+          create_host_path: false
+    networks: [internal, opcua_egress]
+
+networks:
+  internal:
+    internal: true
+  opcua_egress:
+    driver: bridge
+    # Network egress must be restricted to approved CNC endpoints by IT.

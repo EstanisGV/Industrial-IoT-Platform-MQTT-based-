@@ -1,5 +1,0 @@
-tags:
-  - name: value
-    type: float
-    source: mock.value
-    enabled: true

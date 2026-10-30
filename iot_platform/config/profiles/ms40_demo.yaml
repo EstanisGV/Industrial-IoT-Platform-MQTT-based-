@@ -1,0 +1,9 @@
+# DEMO ONLY, replace NodeIds based on OPC UA browsing.
+variables:
+  spindle_load_pct:
+    node_id: ns=2;s=REPLACE_WITH_REAL_SPINDLE_LOAD
+    mock_min: 15
+    mock_max: 70
+  machine_running:
+    node_id: ns=2;s=REPLACE_WITH_REAL_STATUS
+    mock_type: bool

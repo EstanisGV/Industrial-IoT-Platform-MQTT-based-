@@ -1,0 +1,17 @@
+# One entry per device. Default is an entirely simulated machine.
+machines:
+  - id: index_ms22_01
+    enabled: true
+    mode: mock
+    interval_seconds: 10
+    profile: ms22_demo.yaml
+    # To connect for real, switch mode to opcua, set endpoint + real NodeIds.
+    # endpoint: opc.tcp://10.0.0.10:4840
+    # security: Basic256Sha256,SignAndEncrypt,/app/secrets/client.der,/app/secrets/client.pem
+    # username_env: INDEX_MS22_USER
+    # password_env: INDEX_MS22_PASS
+  - id: index_ms40_01
+    enabled: false
+    mode: mock
+    interval_seconds: 10
+    profile: ms40_demo.yaml

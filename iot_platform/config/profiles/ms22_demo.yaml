@@ -1,0 +1,13 @@
+# DEMO ONLY! These NodeIds are placeholders, not verified SINUMERIK nodes.
+variables:
+  cycle_count:
+    node_id: ns=2;s=REPLACE_WITH_REAL_CYCLE_COUNT
+    mock_min: 0
+    mock_max: 500
+  spindle_load_pct:
+    node_id: ns=2;s=REPLACE_WITH_REAL_SPINDLE_LOAD
+    mock_min: 10
+    mock_max: 65
+  machine_running:
+    node_id: ns=2;s=REPLACE_WITH_REAL_STATUS
+    mock_type: bool
